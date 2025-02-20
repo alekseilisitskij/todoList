@@ -1,0 +1,20 @@
+import "./header.css";
+import skbLogo from "../../assets/img/skb.svg";
+
+export const Header = () => {
+  return (
+    <div className="header">
+      <a href="#" className="logo header__logo">
+        <img src={skbLogo} alt="skb" />
+      </a>
+      <form className="form" id="filter__form">
+        <input
+          type="text"
+          id="filter__inp"
+          className="form__input"
+          placeholder="Введите запрос"
+        />
+      </form>
+    </div>
+  );
+};

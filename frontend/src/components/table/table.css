@@ -1,0 +1,159 @@
+.block {
+  padding-top: 40px;
+  padding-bottom: 76px;
+}
+
+.block__title {
+  margin: 0;
+  margin-bottom: 10px;
+  color: #333;
+  font-size: 24px;
+  font-weight: 700;
+}
+
+.block-th {
+  text-align: left;
+}
+
+.block__head {
+  color: #b0b0b0;
+  font-size: 12px;
+  font-weight: 400;
+}
+
+.block__id {
+  color: red;
+}
+
+/* .table {
+  border-collapse: collapse;
+} */
+
+.table thead {
+  background-color: #f5f5f5;
+}
+
+.table th.block__id,
+.table th.block__fio,
+.table th.block__data,
+.table th.block__clear,
+.table th.block__contacts,
+.table th.block__move {
+  color: #b0b0b0;
+  font-size: 12px;
+  font-weight: 400;
+  background-color: #f5f5f5;
+}
+
+.btn__th_svg {
+  transform: rotate(180deg);
+}
+
+.btn__th {
+  color: #b0b0b0;
+  font-size: 12px;
+  font-weight: 400;
+  background-color: #f5f5f5;
+  text-align: inherit;
+}
+
+.btn__active .btn__th_svg {
+  transform: rotate(360deg);
+}
+
+.table td.td__id {
+  padding-top: 11px;
+  color: #b0b0b0;
+  font-size: 12px;
+  font-weight: 400;
+}
+
+.table td.td__fio,
+.table td.td__data,
+.table td.td__clear,
+.table td.td__contacts,
+.table td.td__move {
+  color: #333;
+  font-size: 14px;
+  font-weight: 400;
+}
+
+.btn-reset {
+  padding: 0;
+  border: none;
+  background-color: transparent;
+  cursor: pointer;
+}
+
+.block__btn {
+  padding: 0;
+  border: none;
+  background-color: transparent;
+  cursor: pointer;
+  text-align: center;
+  font-size: 14px;
+  font-weight: 700;
+  color: #9873ff;
+  border: 1px solid #9873ff;
+  display: block;
+  margin: 0 auto;
+  padding: 10px;
+  border-radius: 10;
+  transition: all 0.2s ease-in-out;
+}
+
+.block__btn:hover {
+  background-color: #9873ff;
+  color: #fff;
+}
+
+.block__btn:hover svg {
+  stroke: #fff;
+  fill: #fff;
+}
+
+.block__btn_svg {
+  margin-right: 10px;
+}
+
+.block__btn_change {
+  margin-right: 30px;
+  color: #333;
+  font-size: 14px;
+  font-weight: 400;
+}
+
+.block__btn_delete {
+  margin-right: 30px;
+  color: #333;
+  font-size: 14px;
+  font-weight: 400;
+}
+
+.block__spin {
+  display: none;
+  padding: 132px 467px;
+  background-color: #fff;
+}
+
+.block__spinner {
+  display: block;
+  margin: 0 auto;
+}
+
+.block__list {
+  height: auto;
+  background-color: #fff;
+}
+
+.failed {
+  display: block;
+  text-align: center;
+  color: black;
+  font-size: 25px;
+  font-weight: 700;
+}
+
+.text-info {
+  color: #9873ff !important;
+}

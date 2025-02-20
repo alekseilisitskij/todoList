@@ -1,0 +1,15 @@
+.header {
+  display: flex;
+  padding: 20px;
+  background-color: #fff;
+}
+
+.header__logo {
+  margin-right: 53px;
+}
+
+.form__input {
+  width: 581px;
+  height: 44px;
+  border: 1px solid #b0b0b0;
+}

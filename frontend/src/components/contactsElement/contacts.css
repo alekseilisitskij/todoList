@@ -1,0 +1,27 @@
+.contacts {
+  position: relative;
+  display: flex;
+  width: 108px;
+  flex-wrap: wrap;
+  gap: 7px;
+}
+
+.contacts a {
+  width: 16px;
+  height: 16px;
+  background: no-repeat;
+  background-position: center;
+  background-size: cover;
+}
+
+.btn__contacts {
+  position: absolute;
+  right: 0;
+  top: -2px;
+}
+
+.contacts__svgNumber {
+  color: #333;
+  font-size: 8px;
+  font-weight: 700;
+}
