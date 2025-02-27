@@ -1,4 +1,4 @@
-import { Formik, Form, Field, ErrorMessage } from "formik";
+import { Formik, Form, Field, ErrorMessage, FieldArray } from "formik";
 import * as Yup from "yup";
 import { customAlphabet } from "nanoid";
 import { useState } from "react";
@@ -14,22 +14,24 @@ import "./modal.css";
 // Устанавливаю индификатор через библиотеку nanoid
 const nanoid = customAlphabet("0123456789", 13);
 
+const initialValues = {
+  name: "",
+  surname: "",
+  lastName: "",
+  contacts: [],
+  id: nanoid(),
+  updatedAt: new Date().toISOString(),
+  createdAt: new Date().toISOString(),
+};
+
+const validation = Yup.object({
+  name: Yup.string().min(2, "Введи имя").required("Заполни"),
+  surname: Yup.string().min(2, "Введи фамилию").required("Заполни"),
+  lastName: Yup.string().min(2, "Введи отчество").required("Заполни"),
+});
+
 export const ModalAdd = ({ onClose }) => {
-  const [options, setOptions] = useState([]); // Следит за состоянием option в selector
-  const [countID, setCountID] = useState(1); // id для option
-
   const dispatch = useDispatch();
-
-  const handelComponent = () => {
-    // Действие для добавления option
-    setOptions([...options, countID]);
-    setCountID(countID + 1);
-  };
-
-  const handelDeleteComponent = (id) => {
-    // Действие для удаления option
-    setOptions(options.filter((item) => item !== id));
-  };
 
   const handleSave = (handleSubmit, onClose) => {
     handleSubmit();
@@ -39,20 +41,8 @@ export const ModalAdd = ({ onClose }) => {
   return (
     <div className="modal__newClient" id="newClientModal" onClick={onClose}>
       <Formik
-        initialValues={{
-          name: "",
-          surname: "",
-          lastName: "",
-          contacts: [],
-          id: nanoid(),
-          updatedAt: new Date().toISOString(),
-          createdAt: new Date().toISOString(),
-        }}
-        validationSchema={Yup.object({
-          name: Yup.string().min(2, "Введи имя").required("Заполни"),
-          surname: Yup.string().min(2, "Введи фамилию").required("Заполни"),
-          lastName: Yup.string().min(2, "Введи отчество").required("Заполни"),
-        })}
+        initialValues={initialValues}
+        validationSchema={validation}
         // enableReinitialize={true} // это делается для того, чтобы обновлялся initialValues Fromik по состоянию contact и ещё есть способ ч/з setFieldValue
         // Если contact обновляется асинхронно – используй enableReinitialize={true}.
         // Если хочешь управлять значением вручную – используй setFieldValue("contacts", [...]).
@@ -108,41 +98,60 @@ export const ModalAdd = ({ onClose }) => {
               </Form>
             </div>
             <div className="modal__btn">
-              {options.map((item, i) => {
-                return (
-                  <ContactsInput
-                    // Действие для добавления контактов в contacts
-                    handelAddContacts={(data) => {
-                      console.log(data);
-                      setFieldValue("contacts", [...values.contacts, data]); // Обновляем поле Formik
-                    }}
-                    handelDeleteComponent={() => handelDeleteComponent(item)}
-                    key={i}
-                    // handelAddContacts={(data) => {
-                    //   console.log(data);
-                    //   const id = Date.now().toString();
-                    //   const newContact = { ...data, id };
-                    //   setFieldValue("contacts", [
-                    //     ...values.contacts,
-                    //     newContact,
-                    //   ]); // Обновляем поле Formik
-                    // }}
-                    // handelDeleteComponent={handelDeleteComponent}
-                    // key={i}
-                  />
-                );
-              })}
-              {options.length > 0 ? (
-                <BtnAddInput
-                  handelComponent={handelComponent}
-                  style={{ padding: "15px 0px" }}
-                />
-              ) : (
-                <BtnAddInput
-                  handelComponent={handelComponent}
-                  style={{ padding: "0px 0px" }}
-                />
-              )}
+              {/* FieldArray используется для управления массивом contacts в Formik. Он позволяет динамически добавлять и удалять элементы формы. */}
+              <FieldArray
+                // name="contacts" → Связывает FieldArray с values.contacts в Formik.
+                name="contacts"
+                // arrayHelpers → Это объект с методами push, remove, replace и т.д.
+                render={(arrayHelpers) => (
+                  <div>
+                    {/* values.contacts → Массив контактов в Formik.*/}
+                    {values.contacts.map((contact, i) => (
+                      // contact.id || i - Если у контакта есть id, он используется как key. Если id нет (например, у нового контакта), используется индекс массива (i).
+                      <div key={contact.id || i}>
+                        <ContactsInput
+                          handelAddContacts={(data) => {
+                            //data → новые данные для контакта.
+                            const updatedContacts = values.contacts.map(
+                              (
+                                item //Используем map(), чтобы найти контакт с contact.id и обновить его.
+                              ) =>
+                                item.id === contact.id
+                                  ? { ...item, ...data }
+                                  : item //это для обновления нужного объекта в массиве contacts.
+                            );
+                            setFieldValue("contacts", updatedContacts); //setFieldValue — это метод из Formik, который изменяет значение указанного поля.
+                          }}
+                          handelDeleteComponent={() =>
+                            setFieldValue(
+                              "contacts",
+                              values.contacts.filter(
+                                (item) => item.id !== contact.id
+                              )
+                            )
+                          }
+                          contacts={contact}
+                        />
+                      </div>
+                    ))}
+
+                    <BtnAddInput
+                      handelComponent={() =>
+                        arrayHelpers.push({
+                          id: nanoid(),
+                          type: "phone",
+                          value: "",
+                        })
+                      }
+                      style={
+                        values.contacts.length > 0
+                          ? { padding: "15px 0px" }
+                          : { padding: "0px 0px" }
+                      }
+                    />
+                  </div>
+                )}
+              />
             </div>
             <button
               className="modal__content_btn-create"

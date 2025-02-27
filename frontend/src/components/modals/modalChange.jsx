@@ -1,4 +1,4 @@
-import { Formik, Form, Field, ErrorMessage } from "formik";
+import { Formik, Form, Field, ErrorMessage, FieldArray } from "formik";
 import * as Yup from "yup";
 import { useEffect, useState } from "react";
 import { clientChange } from "../slice/ClientSlice";
@@ -8,11 +8,28 @@ import { BtnAddInput } from "./btnAddInput";
 
 import closeSVG from "../../assets/img/close.svg";
 import "./modal.css";
+import { nanoid } from "nanoid";
 
 export const ModalChange = ({ selectedСlient, onClose }) => {
   const { name, surname, lastName, id, contacts, updatedAt, createdAt } =
     selectedСlient;
-  // const selector = useSelector((state) => state.data);
+
+  const initialValues = {
+    name: name,
+    surname: surname,
+    lastName: lastName,
+    contacts: contacts,
+    id: id,
+    updatedAt: updatedAt,
+    createdAt: new Date().toISOString(),
+  };
+
+  const validation = Yup.object({
+    name: Yup.string().min(2, "Введи имя").required("Заполни"),
+    surname: Yup.string().min(2, "Введи фамилию").required("Заполни"),
+    lastName: Yup.string().min(2, "Введи отчество").required("Заполни"),
+  });
+
   const dispatch = useDispatch();
   const [options, setOptions] = useState(contacts);
   const [countID, setCountID] = useState(1);
@@ -42,20 +59,8 @@ export const ModalChange = ({ selectedСlient, onClose }) => {
   return (
     <div className="modal__changeClient">
       <Formik
-        initialValues={{
-          name: name,
-          surname: surname,
-          lastName: lastName,
-          contacts: contacts,
-          id: id,
-          updatedAt: updatedAt,
-          createdAt: new Date().toISOString(),
-        }}
-        validationSchema={Yup.object({
-          name: Yup.string().min(2, "Введи имя").required("Заполни"),
-          surname: Yup.string().min(2, "Введи фамилию").required("Заполни"),
-          lastName: Yup.string().min(2, "Введи отчество").required("Заполни"),
-        })}
+        initialValues={initialValues}
+        validationSchema={validation}
         // enableReinitialize={true} // это делается для того, чтобы обновлялся initialValues Fromik по состоянию contact и ещё есть способ ч/з setFieldValue
         // Если contact обновляется асинхронно – используй enableReinitialize={true}.
         // Если хочешь управлять значением вручную – используй setFieldValue("contacts", [...]).
@@ -120,30 +125,54 @@ export const ModalChange = ({ selectedСlient, onClose }) => {
               </Form>
             </div>
             <div className="modal__btn modal__btnChange">
-              {options.map((item, i) => {
-                return (
-                  <ContactsInput
-                    // Действие для добавления контактов в contacts
-                    handelAddContacts={(data) => {
-                      setFieldValue("contacts", [...values.contacts, data]); // Обновляем поле Formik
-                    }}
-                    contacts={item}
-                    handelDeleteComponent={() => handelDeleteComponent(i)}
-                    key={i}
-                  />
-                );
-              })}
-              {options.length > 0 ? (
-                <BtnAddInput
-                  handelComponent={handelComponent}
-                  style={{ padding: "15px 0px" }}
-                />
-              ) : (
-                <BtnAddInput
-                  handelComponent={handelComponent}
-                  style={{ padding: "0px 0px" }}
-                />
-              )}
+              <FieldArray
+                name="contacts"
+                render={(arrayHelpers) => (
+                  <div>
+                    {values.contacts.map((contact, i) => (
+                      <div key={contact.id || i}>
+                        {" "}
+                        {/* Если id нет, используем индекс */}
+                        <ContactsInput
+                          handelAddContacts={(data) => {
+                            const updatedContacts = values.contacts.map(
+                              (item) =>
+                                item.id === contact.id
+                                  ? { ...item, ...data }
+                                  : item
+                            );
+                            setFieldValue("contacts", updatedContacts);
+                          }}
+                          handelDeleteComponent={() =>
+                            setFieldValue(
+                              "contacts",
+                              values.contacts.filter(
+                                (item) => item.id !== contact.id
+                              )
+                            )
+                          }
+                          contacts={contact}
+                        />
+                      </div>
+                    ))}
+
+                    <BtnAddInput
+                      handelComponent={() =>
+                        arrayHelpers.push({
+                          id: nanoid(), // Локальный id, НЕ отправляем на сервер
+                          type: "phone",
+                          value: "",
+                        })
+                      }
+                      style={
+                        values.contacts.length > 0
+                          ? { padding: "15px 0px" }
+                          : { padding: "0px 0px" }
+                      }
+                    />
+                  </div>
+                )}
+              />
             </div>
             <button
               className="modal__content_btn-create"

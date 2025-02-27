@@ -6,24 +6,25 @@ export const ContactsInput = ({
   handelAddContacts,
   contacts,
 }) => {
-  const initializationType = contacts ? contacts.type : "phone";
-  const [type, setType] = useState(initializationType);
+  // console.log(contacts);
+  const { type, value } = contacts;
+  const [typeSelect, setTypeSelect] = useState(type);
+  const [valueSelect, setValueSelect] = useState(value);
 
-  const initializationValue = contacts ? contacts.value : "";
-  const [value, setValue] = useState(initializationValue);
+  // const initializationValue = contacts ? contacts.value : "";
+  // const [value, setValue] = useState(initializationValue);
 
   const handleChangeType = (e) => {
     const newType = e.target.value;
-    setType(newType);
+    setTypeSelect(newType);
   };
 
   const handleChangeValue = (e) => {
-    setValue(e.target.value);
+    setValueSelect(e.target.value);
   };
 
   const handleBlur = () => {
-    const newContact = { type, value };
-    handelAddContacts(newContact);
+    handelAddContacts({ type: typeSelect, value: valueSelect });
   };
 
   // setValue("");
@@ -32,7 +33,7 @@ export const ContactsInput = ({
       <select
         className="form-select form-select-sm"
         aria-label=".form-select-sm"
-        value={type}
+        value={typeSelect}
         onChange={handleChangeType}
       >
         <option className="modal__input_option" value="phone">
@@ -56,7 +57,7 @@ export const ContactsInput = ({
         name="data_input"
         required={true}
         type="text"
-        value={value}
+        value={valueSelect}
         onChange={handleChangeValue}
         onBlur={handleBlur}
         placeholder="Введите данные контакта"

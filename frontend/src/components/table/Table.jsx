@@ -7,6 +7,7 @@ import { dateInYyyyMmDdHhMmSs } from "../date/date";
 import { tr } from "./btns";
 import { CreateContactsElement } from "../contactsElement/contactsElement";
 import { ModalChange } from "../modals/modalChange";
+import { ModaleDelete } from "../modals/modalDelete";
 
 import "./table.css";
 import pencil from "../../assets/img/pencil.svg";
@@ -14,10 +15,13 @@ import deleteSVG from "../../assets/img/delete.svg";
 
 export const Table = () => {
   const [showChangeModal, setShowChangeModal] = useState(false);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [selectedСlient, setselectedСlient] = useState(null);
+  const [idDelete, setIdDelete] = useState("");
 
   const dispatch = useDispatch();
   const users = useSelector((state) => state.client);
+  // const searchClient = useSelector((state) => state.client.searchClient);
 
   useEffect(() => {
     dispatch(clientAllGet());
@@ -28,6 +32,7 @@ export const Table = () => {
     setShowChangeModal(true);
   };
 
+  // console.log(searchClient);
   const client = users.client.map(
     ({ name, surname, lastName, id, contacts, updatedAt, createdAt }) => {
       const updatetime = dateInYyyyMmDdHhMmSs(updatedAt);
@@ -62,7 +67,13 @@ export const Table = () => {
               <img src={pencil} alt="arrow" />
               Изменить
             </button>
-            <button className="block__btn_delete btn-reset">
+            <button
+              className="block__btn_delete btn-reset"
+              onClick={() => {
+                setShowDeleteModal(true);
+                setIdDelete(id);
+              }}
+            >
               <img src={deleteSVG} alt="arrow" />
               Удалить
             </button>
@@ -94,6 +105,15 @@ export const Table = () => {
           <ModalChange
             selectedСlient={selectedСlient}
             onClose={() => setShowChangeModal()}
+          />
+        ),
+        document.body
+      )}
+      {createPortal(
+        showDeleteModal && (
+          <ModaleDelete
+            onClose={() => setShowDeleteModal()}
+            idDelete={idDelete}
           />
         ),
         document.body
