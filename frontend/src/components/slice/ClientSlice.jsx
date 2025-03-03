@@ -5,7 +5,8 @@ const { getAll, create, change, deleteData } = http();
 
 const initialState = {
   client: [],
-  searchClient: "asdsa",
+  searchClient: "",
+  surnameSort: false,
 };
 //  Получаю всех клиентов
 export const clientAllGet = createAsyncThunk("/api/getAll", async () => {
@@ -37,11 +38,14 @@ export const clientDelete = createAsyncThunk("/api/delete", async ({ id }) => {
 const clientSlice = createSlice({
   name: "client",
   initialState,
-  // reducers: {
-  //   setSearchClient: (state, action) => {
-  //     state.searchClient = action.payload;
-  //   },
-  // },
+  reducers: {
+    setSearchClient: (state, action) => {
+      state.searchClient = action.payload;
+    },
+    setSurnameSort: (state) => {
+      state.surnameSort = !state.surnameSort;
+    },
+  },
   // обрабатываем асинхронные операции
   extraReducers: (builder) => {
     builder
@@ -72,6 +76,5 @@ const clientSlice = createSlice({
   },
 });
 const { actions, reducer } = clientSlice;
-// export const { setSearchClient } = actions;
-
+export const { setSearchClient, setSurnameSort } = actions;
 export default reducer;

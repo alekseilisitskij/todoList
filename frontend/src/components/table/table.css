@@ -57,7 +57,7 @@
   text-align: inherit;
 }
 
-.btn__active .btn__th_svg {
+.btn__active {
   transform: rotate(360deg);
 }
 

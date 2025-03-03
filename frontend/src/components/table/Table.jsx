@@ -4,10 +4,11 @@ import { clientAllGet } from "../slice/ClientSlice";
 import { createPortal } from "react-dom";
 
 import { dateInYyyyMmDdHhMmSs } from "../date/date";
-import { tr } from "./btns";
+import { HeadTable } from "./headTable";
 import { CreateContactsElement } from "../contactsElement/contactsElement";
 import { ModalChange } from "../modals/modalChange";
 import { ModaleDelete } from "../modals/modalDelete";
+import { selectFilterClients } from "../filter/selectFilterClients";
 
 import "./table.css";
 import pencil from "../../assets/img/pencil.svg";
@@ -16,24 +17,22 @@ import deleteSVG from "../../assets/img/delete.svg";
 export const Table = () => {
   const [showChangeModal, setShowChangeModal] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
-  const [selectedСlient, setselectedСlient] = useState(null);
+  const [selectedСlient, setSelectedСlient] = useState(null);
   const [idDelete, setIdDelete] = useState("");
 
   const dispatch = useDispatch();
-  const users = useSelector((state) => state.client);
-  // const searchClient = useSelector((state) => state.client.searchClient);
+  const filterClients = useSelector(selectFilterClients);
 
   useEffect(() => {
     dispatch(clientAllGet());
   }, [dispatch]);
 
   const handleEditClick = (client) => {
-    setselectedСlient(client);
+    setSelectedСlient(client);
     setShowChangeModal(true);
   };
 
-  // console.log(searchClient);
-  const client = users.client.map(
+  const client = filterClients.map(
     ({ name, surname, lastName, id, contacts, updatedAt, createdAt }) => {
       const updatetime = dateInYyyyMmDdHhMmSs(updatedAt);
       const createtime = dateInYyyyMmDdHhMmSs(createdAt);
@@ -91,7 +90,7 @@ export const Table = () => {
           <table className="table block__head">
             <thead>
               <tr>
-                {tr}
+                <HeadTable />
                 <th className="col block__contacts">Контакты</th>
                 <th className="col block__move">Действия</th>
               </tr>

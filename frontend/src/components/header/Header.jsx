@@ -1,15 +1,15 @@
-// import { useDispatch } from "react-redux";
-// import { setSearchClient } from "../slice/ClientSlice";
+import { useDispatch, useSelector } from "react-redux";
+import { setSearchClient } from "../slice/ClientSlice";
 
 import "./header.css";
 import skbLogo from "../../assets/img/skb.svg";
 
 export const Header = () => {
-  // const dispatch = useDispatch();
+  const dispatch = useDispatch();
 
-  // const handleSearchClient = (e) => {
-  //   dispatch(setSearchClient(e.target.value));
-  // };
+  const handleSearchClient = (e) => {
+    dispatch(setSearchClient(e.target.value));
+  };
 
   return (
     <div className="header">
@@ -21,8 +21,8 @@ export const Header = () => {
           type="text"
           id="filter__inp"
           className="form__input"
-          placeholder="Введите запрос"
-          // onChange={handleSearchClient}
+          placeholder="Введите фамилию"
+          onChange={handleSearchClient}
         />
       </form>
     </div>
