@@ -6,7 +6,7 @@ const { getAll, create, change, deleteData } = http();
 const initialState = {
   client: [],
   searchClient: "",
-  surnameSort: false,
+  surnameSortFlag: false,
 };
 //  Получаю всех клиентов
 export const clientAllGet = createAsyncThunk("/api/getAll", async () => {
@@ -43,7 +43,7 @@ const clientSlice = createSlice({
       state.searchClient = action.payload;
     },
     setSurnameSort: (state) => {
-      state.surnameSort = !state.surnameSort;
+      state.surnameSortFlag = !state.surnameSortFlag;
     },
   },
   // обрабатываем асинхронные операции
